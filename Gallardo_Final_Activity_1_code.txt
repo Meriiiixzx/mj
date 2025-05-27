@@ -1,0 +1,923 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
+#include <conio.h>
+#include <time.h>
+
+#define ROWS 4
+#define COLS 4
+
+
+void SetColor(int ForgC) {
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hStdOut, ForgC);
+}
+
+void gotoxy(int x, int y) {
+    COORD coord = {x - 1, y - 1};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void GOTOXY(int x, int y) {
+    gotoxy(x, y);
+}
+
+void CONSOLE() {
+    system("cls");
+}
+
+void SetCursorVisibility(BOOL visible) {
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    cursorInfo.bVisible = visible;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+}
+
+// border pri
+void DrawModernBorder() {
+    int left = 4, top = 6, right = 146, bottom = 34;
+
+    // Outer border - neon effect
+    SetColor(2); // Cyan
+    for (int x = left; x <= right; x++) {
+        gotoxy(x, top); printf("\333");
+        gotoxy(x, bottom); printf("\333");
+    }
+    for (int y = top; y <= bottom; y++) {
+        gotoxy(left, y); printf("\333");
+        gotoxy(right, y); printf("\333");
+    }
+
+    // Inner glow lines
+    SetColor(2); // Magenta
+    for (int x = left + 2; x <= right - 2; x++) {
+        gotoxy(x, top + 2); printf("\333");
+        gotoxy(x, bottom - 2); printf("\333");
+    }
+    for (int y = top + 2; y <= bottom - 2; y++) {
+        gotoxy(left + 2, y); printf("\333");
+        gotoxy(right - 2, y); printf("\333");
+    }
+
+    // Corners
+    SetColor(7); // Green
+    gotoxy(left, top); printf("\337");
+    gotoxy(right, top); printf("\337");
+    gotoxy(left, bottom); printf("\337");
+    gotoxy(right, bottom); printf("\337");
+}
+
+// Show "M" letter
+void ShowLetterM(int x, int y, int color) {
+    SetColor(color);
+    gotoxy(x, y);     printf(" \262   \262   ");
+    gotoxy(x, y + 1); printf(" \262\262 \262\262   ");
+    gotoxy(x, y + 2); printf(" \262 \262 \262 ");
+    gotoxy(x, y + 3); printf(" \262   \262  ");
+    gotoxy(x, y + 4); printf(" \262   \262  ");
+}
+
+// Show "S" letter (renamed to ShowMyLetterS)
+void ShowMyLetterS(int x, int y, int color) {
+    SetColor(color);
+    gotoxy(x, y);     printf("  \262\262\262\262\262 ");
+    gotoxy(x, y + 1); printf(" \262     ");
+    gotoxy(x, y + 2); printf("  \262\262\262\262  ");
+    gotoxy(x, y + 3); printf("      \262 ");
+    gotoxy(x, y + 4); printf(" \262\262\262\262\262 ");
+}
+
+// Show "G" letter
+void ShowLetterG(int x, int y, int color) {
+    SetColor(color);
+    gotoxy(x, y);     printf("  \262\262\262\262\262 ");
+    gotoxy(x, y + 1); printf(" \262     ");
+    gotoxy(x, y + 2); printf(" \262  \262\262\262 ");
+    gotoxy(x, y + 3); printf(" \262    \262 ");
+    gotoxy(x, y + 4); printf("  \262\262\262\262\262 ");
+}
+
+// Show MSG together 
+void ShowMSG() {
+    int x = 40, y = 10;
+    SetColor(14);
+    ShowLetterM(x, y, 14);
+    ShowMyLetterS(x + 10, y, 12);  // Adjusted spacing
+    ShowLetterG(x + 20, y, 10);    // Adjusted spacing
+}
+
+// Show HELLO letters
+void ShowLetterH(int x, int y) {
+    gotoxy(x, y);     printf("\262     \262");
+    gotoxy(x, y + 1); printf("\262     \262");
+    gotoxy(x, y + 2); printf("\262\262\262\262\262\262\262");
+    gotoxy(x, y + 3); printf("\262     \262");
+    gotoxy(x, y + 4); printf("\262     \262");
+}
+void ShowLetterE(int x, int y) {
+    gotoxy(x, y);     printf("\262\262\262\262\262\262");
+    gotoxy(x, y + 1); printf("\262     ");
+    gotoxy(x, y + 2); printf("\262\262\262\262  ");
+    gotoxy(x, y + 3); printf("\262     ");
+    gotoxy(x, y + 4); printf("\262\262\262\262\262\262");
+}
+void ShowLetterL(int x, int y) {
+    gotoxy(x, y);     printf("\262     ");
+    gotoxy(x, y + 1); printf("\262     ");
+    gotoxy(x, y + 2); printf("\262     ");
+    gotoxy(x, y + 3); printf("\262     ");
+    gotoxy(x, y + 4); printf("\262\262\262\262\262\262");
+}
+void ShowLetterO(int x, int y) {
+    gotoxy(x, y);     printf(" \262\262\262\262 ");
+    gotoxy(x, y + 1); printf("\262    \262");
+    gotoxy(x, y + 2); printf("\262    \262");
+    gotoxy(x, y + 3); printf("\262    \262");
+    gotoxy(x, y + 4); printf(" \262\262\262\262 ");
+}
+
+// FINALS letters
+void ShowLetterF(int x, int y) {
+    gotoxy(x, y);     printf("\262\262\262\262\262\262");
+    gotoxy(x, y + 1); printf("\262     ");
+    gotoxy(x, y + 2); printf("\262\262\262\262  ");
+    gotoxy(x, y + 3); printf("\262     ");
+    gotoxy(x, y + 4); printf("\262     ");
+}
+void ShowLetterI(int x, int y) {
+    gotoxy(x, y);     printf("\262\262\262");
+    gotoxy(x, y + 1); printf(" \262 ");
+    gotoxy(x, y + 2); printf(" \262 ");
+    gotoxy(x, y + 3); printf(" \262 ");
+    gotoxy(x, y + 4); printf("\262\262\262");
+}
+void ShowLetterN(int x, int y) {
+    gotoxy(x, y);     printf("\262     \262");
+    gotoxy(x, y + 1); printf("\262\262    \262");
+    gotoxy(x, y + 2); printf("\262 \262   \262");
+    gotoxy(x, y + 3); printf("\262  \262  \262");
+    gotoxy(x, y + 4); printf("\262   \262\262\262");
+}
+void ShowLetterA(int x, int y) {
+    gotoxy(x, y);     printf(" \262\262\262 ");
+    gotoxy(x, y + 1); printf("\262   \262");
+    gotoxy(x, y + 2); printf("\262\262\262\262\262");
+    gotoxy(x, y + 3); printf("\262   \262");
+    gotoxy(x, y + 4); printf("\262   \262");
+}
+void ShowLetterS(int x, int y) {
+    gotoxy(x, y);     printf(" \262\262\262\262\262");
+    gotoxy(x, y + 1); printf("\262     ");
+    gotoxy(x, y + 2); printf(" \262\262\262\262 ");
+    gotoxy(x, y + 3); printf("     \262");
+    gotoxy(x, y + 4); printf("\262\262\262\262\262 ");
+}
+
+// HELLO FINALS together (HELLO moved left 5 spaces)
+void ShowHELLOFINALS() {
+    int x = 40, y = 20;
+    SetColor(14);
+
+    // HELLO
+    ShowLetterH(x, y);
+    ShowLetterE(x + 8, y);
+    ShowLetterL(x + 16, y);
+    ShowLetterL(x + 24, y);
+    ShowLetterO(x + 32, y);
+
+    // FINALS (unchanged)
+    ShowLetterF(x + 42, y);
+    ShowLetterI(x + 50, y);
+    ShowLetterN(x + 56, y);
+    ShowLetterA(x + 64, y);
+    ShowLetterL(x + 72, y);
+    ShowLetterS(x + 80, y);
+}
+
+// Footer info
+void ShowFooter() {
+    SetColor(15);
+    gotoxy(10, 36); printf("Developer: Gallardo Mary Josan S.");
+    gotoxy(10, 37); printf("Block: BSCS CS 1B");
+    gotoxy(110, 37); printf("Instructor: Nomer Aguado");
+    SetColor(14);
+    gotoxy(110, 38); printf("Press any key to continue...");
+}
+
+void LoopTitleEffect() {
+    int colors[] = {13, 11, 10, 15};
+    int i = 0;
+    while (!_kbhit()) {  // Pinalitan ang kbhit ng _kbhit
+        ShowMSG();
+        ShowHELLOFINALS();
+        ShowFooter();
+        Sleep(300);
+        i++;
+    }
+    _getch();  // Dagdag ito para i-clear ang key buffer
+}
+
+// Splash screen
+void SeeMarySplash2025() {
+    system("cls");
+    SetCursorVisibility(FALSE);
+    DrawModernBorder();
+    LoopTitleEffect();
+    SetCursorVisibility(TRUE);
+    system("cls");
+}
+
+// Regular border for other screens
+void DrawRegularBorder() {
+    int left = 5, top = 4, right = 145, bottom = 37;
+    int maxX = 150, maxY = 40;  
+
+    for (int y = 1; y <= maxY; y++) {
+        for (int x = 1; x <= maxX; x++) {
+            if (x < left || x > right || y < top || y > bottom) {
+                int colorMix[] = {10, 2, 0};
+                int randomColor = colorMix[rand() % 3];
+                SetColor(randomColor);
+                GOTOXY(x, y);
+                printf("\376");  
+            }
+        }
+    }
+}
+
+void drawMenuBox(int x1, int y1, int x2, int y2, int color) {
+    SetColor(color);
+    for(int x = x1; x <= x2; x++) {
+        GOTOXY(x, y1);
+        printf("\333");
+        GOTOXY(x, y2);
+        printf("\333");
+    }
+    for(int y = y1; y <= y2; y++) {
+        GOTOXY(x1, y);
+        printf("\333");
+        GOTOXY(x2, y);
+        printf("\333");
+    }
+    GOTOXY(x1, y1); printf("\333");
+    GOTOXY(x2, y1); printf("\333");
+    GOTOXY(x1, y2); printf("\333");
+    GOTOXY(x2, y2); printf("\333");
+}
+
+/// Problem 1: Array Insertion
+void sortArray(int arr[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void insertSorted(int arr[], int size, int element) {
+    int i = size - 1;
+    while (i >= 0 && arr[i] > element) {
+        arr[i + 1] = arr[i];
+        i--;
+    }
+    arr[i + 1] = element;
+}
+
+void printArray(int arr[], int size) {
+    SetColor(15);
+    for (int i = 0; i < size; i++) {
+        printf("%d  ", arr[i]);
+    }
+}
+
+void arrayInsertionProblem() {
+    CONSOLE();
+    DrawRegularBorder();
+    
+    GOTOXY(60, 6);
+    SetColor(14); 
+    printf("Final Activity: Insertion Array Problem");
+    
+    int arr[10] = {15, 5, 3, 1, 7, 10, 13, 21, 33};
+    int currentSize = 9;
+    
+    GOTOXY(20, 10);
+    SetColor(9); 
+    printf("Computer: ");
+    SetColor(14); 
+    printf("Unsorted Array: ");
+    printArray(arr, currentSize);
+    
+    sortArray(arr, currentSize);
+    
+    GOTOXY(20, 12);
+    SetColor(9);
+    printf("Computer: ");
+    SetColor(14); 
+    printf("Sorted Array: ");
+    printArray(arr, currentSize);
+    
+    GOTOXY(20, 14);
+    SetColor(9); 
+    printf("Computer: ");
+    SetColor(14); 
+    printf("Input 1 element of the array.");
+    
+    GOTOXY(20, 16);
+    SetColor(14); 
+    printf("User: ");
+    SetColor(15); 
+    GOTOXY(27, 16); // Move cursor right next to "User: "
+    int element;
+    char input[100];
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%d", &element);
+    
+    GOTOXY(20, 18);
+    SetColor(9); 
+    printf("Computer: ");
+    SetColor(14); 
+    printf("Unsorted Array: ");
+    printArray(arr, currentSize);
+    printf("%d", element);
+    
+    insertSorted(arr, currentSize, element);
+    currentSize++;
+    
+    GOTOXY(20, 20);
+    SetColor(9); 
+    printf("Computer: ");
+    SetColor(14); 
+    printf("Sorted Array: ");
+    printArray(arr, currentSize);
+    
+    drawMenuBox(95, 34, 130, 36, 14); 
+    GOTOXY(100, 35);
+    
+    SetColor(15); 
+    printf("PRESS ANY KEY TO GO BACK");
+    
+    getch();
+}
+
+// Problem 2: Array Rotation
+void rotateLeft(int arr[], int n, int t) {
+    t = t % n;
+    if (t == 0) return;
+
+    int temp[t];
+    for (int i = 0; i < t; i++) temp[i] = arr[i];
+    for (int i = 0; i < n - t; i++) arr[i] = arr[i + t];
+    for (int i = 0; i < t; i++) arr[n - t + i] = temp[i];
+}
+
+void displayRotationProgram() {
+    CONSOLE();
+    DrawRegularBorder();
+
+    int n, t;
+    int arr[20];
+    char input[100];
+    int startX = 10;
+    int startY = 10;
+
+    GOTOXY(60, 6);
+    SetColor(14);
+    printf("Final Activity: Rotation Array Problem\n\n");
+
+    GOTOXY(startX, startY + 2);
+    SetColor(9);
+    printf("Computer: ");
+    SetColor(15);
+    printf("Input the number of elements to store in the array: (Max: 20 numbers)\n\n");
+
+    GOTOXY(startX, startY + 4);
+    SetColor(14);
+    printf("User:     ");
+    SetColor(15);
+    fgets(input, sizeof(input), stdin);
+    if (sscanf(input, "%d", &n) != 1 || n < 1 || n > 20) {
+        GOTOXY(startX, startY + 6);
+        SetColor(12);
+        printf("Invalid input! Size must be between 1 and 20.\n");
+        return;
+    }
+
+    GOTOXY(startX, startY + 6);
+    SetColor(9);
+    printf("Computer: ");
+    SetColor(15);
+    printf("Input %d numbers of elements in the array:\n\n", n);
+
+    GOTOXY(startX, startY + 8);
+    SetColor(14);
+    printf("User:     ");
+    SetColor(15);
+    GOTOXY(startX + 10, startY + 8);
+
+    for (int i = 0; i < (n > 10 ? 10 : n); i++) {
+        fgets(input, sizeof(input), stdin);
+        if (sscanf(input, "%d", &arr[i]) != 1) {
+            SetColor(12);
+            printf("Invalid input! Please enter a number.\n");
+            return;
+        }
+        if (i < (n > 10 ? 9 : n - 1)) {
+            GOTOXY(startX + 10 + ((i + 1) * 5), startY + 8);
+        }
+    }
+
+    if (n > 10) {
+        GOTOXY(startX, startY + 10);
+        SetColor(14);
+        printf("User:     ");
+        SetColor(15);
+        GOTOXY(startX + 10, startY + 10);
+        for (int i = 10; i < n; i++) {
+            fgets(input, sizeof(input), stdin);
+            if (sscanf(input, "%d", &arr[i]) != 1) {
+                SetColor(12);
+                printf("Invalid input! Please enter a number.\n");
+                return;
+            }
+            if (i < n - 1) {
+                GOTOXY(startX + 10 + ((i - 9) * 5), startY + 10);
+            }
+        }
+    }
+
+    GOTOXY(startX, startY + (n > 10 ? 12 : 10));
+    SetColor(9);
+    printf("Computer: ");
+    SetColor(12);
+    printf("Original array: ");
+    SetColor(15);
+    for (int i = 0; i < n; i++) {
+        printf("%d  ", arr[i]);
+    }
+    printf("\n");
+
+    GOTOXY(startX, startY + (n > 10 ? 14 : 12));
+    SetColor(9);
+    printf("Computer: ");
+    SetColor(15);
+    printf("How many times would you like to rotate the array from left to right?\n\n");
+
+    GOTOXY(startX, startY + (n > 10 ? 16 : 14));
+    SetColor(14);
+    printf("User:     ");
+    SetColor(15);
+    fgets(input, sizeof(input), stdin);
+    if (sscanf(input, "%d", &t) != 1) {
+        GOTOXY(startX, startY + (n > 10 ? 18 : 16));
+        SetColor(12);
+        printf("Invalid input! Please enter a number.\n");
+        return;
+    }
+
+    rotateLeft(arr, n, t);
+
+    GOTOXY(startX, startY + (n > 10 ? 18 : 16));
+    SetColor(9);
+    printf("Computer: ");
+    SetColor(10);
+    printf("Modified Array: %d times rotated: ", t);
+    SetColor(15);
+    for (int i = 0; i < n; i++) {
+        printf("%d  ", arr[i]);
+    }
+
+    drawMenuBox(95, 34, 130, 36, 14);
+    GOTOXY(100, 35);
+    SetColor(14);
+    printf("PRESS ANY KEY TO GO BACK");
+
+    getch();
+}
+
+
+// Problem 3: Matrix Sorting
+void drawMatrixBox(int x, int y, int width, int height) {
+    SetColor(10);
+    for (int i = x; i < x + width; i++) {
+        gotoxy(i, y); printf("%c", 219);
+        gotoxy(i, y + height - 1); printf("%c", 219);
+    }
+    for (int i = y; i < y + height; i++) {
+        gotoxy(x, i); printf("%c", 219);
+        gotoxy(x + width - 1, i); printf("%c", 219);
+    }
+}
+
+void printMatrix(int x, int y, int mat[ROWS][COLS]) {
+    for (int i = 0; i < ROWS; i++) {
+        gotoxy(x, y + i);
+        for (int j = 0; j < COLS; j++) {
+            printf(" %2d ", mat[i][j]);
+        }
+    }
+}
+
+void sortRowWise(int mat[ROWS][COLS]) {
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS - 1; j++) {
+            for (int k = 0; k < COLS - j - 1; k++) {
+                if (mat[i][k] > mat[i][k + 1]) {
+                    int temp = mat[i][k];
+                    mat[i][k] = mat[i][k + 1];
+                    mat[i][k + 1] = temp;
+                }
+            }
+        }
+    }
+}
+
+void sortColumnWise(int mat[ROWS][COLS]) {
+    for (int j = 0; j < COLS; j++) {
+        for (int i = 0; i < ROWS - 1; i++) {
+            for (int k = 0; k < ROWS - i - 1; k++) {
+                if (mat[k][j] > mat[k + 1][j]) {
+                    int temp = mat[k][j];
+                    mat[k][j] = mat[k + 1][j];
+                    mat[k + 1][j] = temp;
+                }
+            }
+        }
+    }
+}
+
+void copyMatrix(int src[ROWS][COLS], int dest[ROWS][COLS]) {
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            dest[i][j] = src[i][j];
+        }
+    }
+}
+
+void matrixSortingProblem() {
+    CONSOLE();
+    DrawRegularBorder();
+    
+    int original[ROWS][COLS] = {
+        {5, 8, 2, 1},
+        {3, 6, 9, 4},
+        {1, 7, 2, 8},
+        {8, 3, 5, 7}
+    };
+    int rowSorted[ROWS][COLS];
+    int colSorted[ROWS][COLS];
+
+    copyMatrix(original, rowSorted);
+    copyMatrix(original, colSorted);
+
+    sortRowWise(rowSorted);
+    sortColumnWise(colSorted);
+
+    SetColor(14);
+    gotoxy(70, 5);
+    printf("MATRIX SORTING PROGRAM");
+
+    // Original Matrix
+    SetColor(12);
+    gotoxy(25, 10);
+    printf("Original Matrix");
+    drawMatrixBox(20, 12, 28, 8);
+    SetColor(15);
+    printMatrix(24, 14, original);
+
+    Sleep(1500); // Wait 1.5 seconds
+
+    // Row-wise Sorted
+    SetColor(10);
+    gotoxy(65, 10);
+    printf("Row-wise Sorted");
+    drawMatrixBox(60, 12, 28, 8);
+    SetColor(15);
+    printMatrix(64, 14, rowSorted);
+
+    Sleep(1500); // Wait 1.5 seconds
+
+    // Column-wise Sorted
+    SetColor(13);
+    gotoxy(105, 10);
+    printf("Column-wise Sorted");
+    drawMatrixBox(100, 12, 28, 8);
+    SetColor(15);
+    printMatrix(104, 14, colSorted);
+
+    drawMenuBox(95, 34, 130, 36, 14); 
+    GOTOXY(100, 35);
+    SetColor(14); 
+    printf("PRESS ANY KEY TO GO BACK");
+
+    getch();
+}
+
+
+// Problem 4: Arithmetic Operations
+void drawMainBox2() {
+    int i;
+    SetColor(2);
+
+    for(i = 40; i <= 110; i++) {
+        GOTOXY(i, 7); printf("\333");
+        GOTOXY(i, 29); printf("\333");
+    }
+    for(i = 7; i <= 29; i++) {
+        GOTOXY(40, i); printf("\333");
+        GOTOXY(110, i); printf("\333");
+    }
+
+    for(i = 40; i <= 110; i++) {
+        GOTOXY(i, 14); printf("\333");
+        GOTOXY(i, 21); printf("\333");
+    }
+
+    for(i = 7; i <= 29; i++) {
+        GOTOXY(75, i); printf("\333");
+    }
+}
+
+void drawFooterBox2() {
+    int i;
+    SetColor(2);
+
+    for(i = 60; i <= 90; i++) {
+        GOTOXY(i, 32); printf("\333");
+        GOTOXY(i, 34); printf("\333");
+    }
+    for(i = 32; i <= 34; i++) {
+        GOTOXY(60, i); printf("\333");
+        GOTOXY(90, i); printf("\333");
+    }
+}
+
+void displayTitle2() {
+    SetColor(14);
+    GOTOXY(53, 5);
+    printf("BASIC ARITHMETIC OPERATIONS USING POINTERS");
+}
+
+void displayInputBoxes2() {
+    SetColor(15);
+
+    SetColor(10);
+    GOTOXY(45, 9);
+    printf("Enter first number:");
+    GOTOXY(45, 10);
+    
+    SetColor(15);
+    printf("+----------------+");
+    GOTOXY(45, 11);
+    printf("|                |");
+    GOTOXY(45, 12);
+    printf("+----------------+");
+
+    SetColor(10);
+    GOTOXY(80, 9);
+    printf("Enter second number:");
+    
+    SetColor(15);
+    GOTOXY(80, 10);
+    printf("+----------------+");
+    GOTOXY(80, 11);
+    printf("|                |");
+    GOTOXY(80, 12);
+    printf("+----------------+");
+}
+
+void displayResults2() {
+    float num1, num2;
+    float *ptr1 = &num1, *ptr2 = &num2;
+    char input1[20], input2[20];
+
+    SetColor(15);
+
+    // Use fgets to read inputs as strings
+    GOTOXY(47, 11); 
+    fgets(input1, 20, stdin);
+    GOTOXY(82, 11); 
+    fgets(input2, 20, stdin);
+
+    // Convert the inputs to float
+    sscanf(input1, "%f", ptr1);
+    sscanf(input2, "%f", ptr2);
+
+    SetColor(10);
+
+    GOTOXY(50, 16);
+    printf("ADDITION:");
+    SetColor(15);
+    GOTOXY(50, 17);
+    printf("%.2f + %.2f = %.2f", *ptr1, *ptr2, *ptr1 + *ptr2);
+
+    SetColor(10);
+    GOTOXY(50, 23);
+    printf("SUBTRACTION:");
+    SetColor(15);
+    GOTOXY(50, 24);
+    printf("%.2f - %.2f = %.2f", *ptr1, *ptr2, *ptr1 - *ptr2);
+    
+    SetColor(10);
+    GOTOXY(80, 16);
+    printf("MULTIPLICATION:");
+    SetColor(15);
+    GOTOXY(80, 17);
+    printf("%.2f * %.2f = %.2f", *ptr1, *ptr2, *ptr1 * *ptr2);
+    
+    SetColor(10);
+    GOTOXY(80, 23);
+    printf("DIVISION:");
+    SetColor(15);
+    GOTOXY(80, 24);
+    printf("%.2f / %.2f = %.2f", *ptr1, *ptr2, *ptr1 / *ptr2);
+}
+
+void arithmeticOperationsProblem() {
+    CONSOLE();
+    DrawRegularBorder();
+
+    displayTitle2();
+    drawMainBox2();
+    displayInputBoxes2();
+    displayResults2();
+    //drawFooterBox2();
+
+    SetColor(10); // Green for border
+    drawMenuBox(95, 34, 130, 36, 10); // Use 10 for green border color
+    
+    SetColor(15); // Reset to white for the text
+    GOTOXY(100, 35);
+    printf("PRESS ANY KEY TO GO BACK");
+
+    getch();
+}
+
+
+
+/// Professional exit acknowledgment screen
+void showExit() {
+    CONSOLE();
+    system("cls");  // Clear console for clean presentation
+
+    // Set optimal console dimensions
+    system("mode con: cols=150 lines=40");
+
+    // Draw border in white
+    SetColor(15);  // White border
+    DrawRegularBorder();
+
+    // Main title in white (centered ASCII art)
+    SetColor(15);  // White color
+    GOTOXY(51, 8);
+    printf("   _____ ____  _____    ______      _ _   ");
+    GOTOXY(51, 9);
+    printf("  / ____/ __ \\|  __ \\  |  ____|    (_) |  ");
+    GOTOXY(51, 10);
+    printf(" | |   | |  | | |  | | | |__  __  ___| |_ ");
+    GOTOXY(51, 11);
+    printf(" | |   | |  | | |  | | |  __| \\ \\/ / | __|");
+    GOTOXY(51, 12);
+    printf(" | |___| |__| | |__| | | |____ >  <| | |_ ");
+    GOTOXY(51, 13);
+    printf("  \\_____\\____/|_____/  |______/_/\\_\\_|\\__|");
+
+    // Developer information in bright grey
+    SetColor(7);  // Bright grey
+    GOTOXY(60, 16);
+    printf("Developed by: Gallardo Mary Josan S.");
+
+    // Program description in grey
+    SetColor(8);  // Grey
+    GOTOXY(29, 18);
+    printf("This program showcases fundamental programming concepts such as data structures, ");
+    GOTOXY(26, 19);
+    printf(" algorithms, and the use of array pointers.,It also highlights how array pointers interact ");
+    GOTOXY(30, 20);
+    printf(" with system-levelconsole manipulation techniques for efficient implementation..");
+
+    // Exit prompt box with white border
+    drawMenuBox(50, 24, 100, 28, 15);  // White border
+    SetColor(15);  // White text
+    GOTOXY(58, 26);
+    printf("PRESS ANY KEY TO EXIT THE PROGRAM");
+
+    // Footer section
+    SetColor(8);  // Grey
+    GOTOXY(30, 32);
+    printf("========================================================================================");
+    SetColor(15);  // White
+    GOTOXY(30, 33);  // Moved from 20 ? 26
+    printf("============================= THANK YOU FOR USING CODE X ===============================");
+    SetColor(8);  // Grey
+    GOTOXY(30, 34);
+    printf("========================================================================================");
+
+    getch();
+}
+
+
+int showArrowMenu() {
+    int choice = 1;
+    int totalChoices = 5;
+    int key;
+
+    CONSOLE();
+    DrawRegularBorder();
+
+    SetColor(14);
+    GOTOXY(65, 8);
+    printf("MAIN MENU");
+
+    // ? Adjusted main menu box height for 5 options
+    drawMenuBox(40, 10, 110, 23, 10); // GREEN border (10)
+
+    while (1) {
+        for (int i = 1; i <= totalChoices; i++) {
+            GOTOXY(50, 11 + i * 2); // spacing
+            if (i == choice) {
+                SetColor(10); // ?? Green highlight
+                printf("> ");
+            } else {
+                SetColor(15); // ?? White default
+                printf("  ");
+            }
+
+            SetColor(i == choice ? 10 : 15);
+
+            switch (i) {
+                case 1: printf("1. Problem 1: Array Insertion Problem"); break;
+                case 2: printf("2. Problem 2: Array Rotation Problem"); break;
+                case 3: printf("3. Problem 3: Matrix Sorting Problem"); break;
+                case 4: printf("4. Problem 4: Arithmetic Operations"); break;
+                case 5: printf("0. Exit Program"); break;
+            }
+        }
+
+        // ? GREEN border for bottom instructions
+            SetColor(10);
+        drawMenuBox(95, 34, 130, 36, 10);
+        GOTOXY(100, 35);
+    
+        SetColor(15);
+        printf("USE ARROW KEYS TO NAVIGATE");
+
+        while (_kbhit()) _getch();
+
+        key = _getch();
+        if (key == 0 || key == 224) key = _getch();
+
+        switch (key) {
+            case 72: choice--; break;
+            case 80: choice++; break;
+            case 13: return (choice == 5) ? 0 : choice;
+            case '1': return 1;
+            case '2': return 2;
+            case '3': return 3;
+            case '4': return 4;
+            case '0': return 0;
+            default: continue;
+        }
+
+        if (choice < 1) choice = totalChoices;
+        else if (choice > totalChoices) choice = 1;
+    }
+}
+
+
+// Main program
+int main() {
+    srand(time(0));
+    system("mode con: cols=150 lines=40");
+    
+    SeeMarySplash2025();
+    
+    int choice;
+    do {
+        choice = showArrowMenu();
+        
+        switch(choice) {
+            case 1:
+                arrayInsertionProblem();
+                break;
+            case 2:
+                displayRotationProgram();
+                break;
+            case 3:
+                matrixSortingProblem();
+                break;
+            case 4:
+                arithmeticOperationsProblem();
+                break;
+            case 0:
+                showExit();
+                break;
+        }
+    } while(choice != 0);
+    
+    return 0;
+}
